@@ -20,24 +20,7 @@ Extremo: Si no se ingresa el criterio correctamente (por ejemplo: criterio = 'no
 """
 
 import struct
-FORMATO = '<i30s24s16sB'
-TAM_REGISTRO = struct.calcsize(FORMATO)
-
-
-def desempaquetar_paciente(registro):
-    """Desempaqueta el registro dado por parámetro.
-    Precondición: registro está en formato binario.
-    Postcondición: devuelve los valores en formato utf-8 y sin bytes de relleno."""
-    
-    #RESOLUCIÓN
-    dni, apellido_b, nombre_b, telefono_b, prioridad = struct.unpack(FORMATO, registro)
-    apellido = apellido_b.rstrip(b'\x00').decode('utf-8')
-    nombre = nombre_b.rstrip(b'\x00').decode('utf-8')
-    telefono = telefono_b.rstrip(b'\x00').decode('utf-8')
-
-    #EPÍLOGO
-    return dni, apellido, nombre, telefono, prioridad
-
+from modulo_1 import TAM_REGISTRO, desempaquetar_paciente
 
 #   MÓDULO 3:
 
@@ -219,4 +202,4 @@ Mantiene el orden por apellido entre pacientes con la misma prioridad.
 
 """
 
-print(listar_pacientes_ordenados("algo.dat","nombre"))
+# print(listar_pacientes_ordenados("algo.dat","nombre"))

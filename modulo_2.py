@@ -64,22 +64,20 @@ def construir_indices(ruta):
             - indice_por_dni: dict con clave DNI (int) y valor k (posición del registro).
             - indice_por_apellido: dict con clave apellido (str) y valor lista de k's.
     """
+    #PRÓLOGO
     indice_por_dni = {}
     indice_por_apellido = {}
     
+    #RESOLUCIÓN
     # Verificamos si el archivo existe para evitar errores
     if not os.path.exists(ruta):
         return indice_por_dni, indice_por_apellido
         
     with open(ruta, 'rb') as archivo:
         k = 0  # Índice de posición del registro (0, 1, 2...)
-        while True:
-            registro_bytes = archivo.read(TAM_REGISTRO)
-            
-            # Condición de corte: llegamos al final del archivo
-            if not registro_bytes or len(registro_bytes) < TAM_REGISTRO:
-                break
-                
+        registro_bytes = archivo.read(TAM_REGISTRO)
+
+        while len(registro_bytes) == TAM_REGISTRO:
             # Solo necesitamos desempaquetar DNI (primer campo) y apellido (segundo campo)
             # para armar el índice, minimizando el procesamiento.
             tupla = struct.unpack(FORMATO, registro_bytes)
@@ -96,7 +94,9 @@ def construir_indices(ruta):
             indice_por_apellido[apellido].append(k)
             
             k += 1
-            
+            registro_bytes = archivo.read(TAM_REGISTRO)
+
+    #EPÍLOGO
     return indice_por_dni, indice_por_apellido
 
 
@@ -127,11 +127,14 @@ def buscar_por_dni(archivo, indice_por_dni, dni):
         El registro del paciente (dict o tupla, según devuelva leer_paciente), 
         o None si el DNI no está en el índice.
     """
+    #PRÓLOGO
     # busqueda en O(1)
     k = indice_por_dni.get(dni)
     
+    #RESOLUCIÓN
     if k is None:
         return None  # el paciente no existe 
-        
+    
+    #EPÍLOGO
     # acceso directo O(1) a la posición en el archivo
     return leer_paciente(archivo, k)

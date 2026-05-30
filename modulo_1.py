@@ -45,11 +45,12 @@ def empaquetar_paciente(dni, apellido, nombre, telefono, prioridad):
     Postcondición: Devuelve un objeto bytes de tamaño TAM_REGISTRO.
     """
     # Codificamos a UTF-8 y luego truncamos los bytes al tamaño máximo permitido
-
+    #RESOLUCIÓN
     apellido_b = apellido.encode('utf-8')[:30]
     nombre_b = nombre.encode('utf-8')[:24]
     telefono_b = telefono.encode('utf-8')[:16]
     
+    #EPÍLOGO
     return struct.pack(FORMATO, dni, apellido_b, nombre_b, telefono_b, prioridad)
 
 def desempaquetar_paciente(registro_bytes):
@@ -60,14 +61,18 @@ def desempaquetar_paciente(registro_bytes):
     Precondición: registro_bytes debe tener exactamente la longitud TAM_REGISTRO.
     Postcondición: Devuelve una tupla (dni, apellido, nombre, telefono, prioridad).
     """
+    #PRÓLOGO
     dni, apellido_b, nombre_b, telefono_b, prioridad = struct.unpack(FORMATO, registro_bytes)
     
     # rstrip(b'\x00') elimina los bytes nulos de relleno agregados por struct.pack
     # errors='ignore' protege contra cortes de caracteres especiales que ocupan mas de un byte, puede pasar por el truncamiento, esto en vez de lanzar un error no nos escribe la ultima letra, ya que ocupa dos bytes pero fue truncada.
+
+    #RESOLUCIÓN
     apellido = apellido_b.rstrip(b'\x00').decode('utf-8', errors='ignore')
     nombre = nombre_b.rstrip(b'\x00').decode('utf-8', errors='ignore')
     telefono = telefono_b.rstrip(b'\x00').decode('utf-8', errors='ignore')
     
+    #EPÍLOGO
     return dni, apellido, nombre, telefono, prioridad
 
 # (b) Operaciones de Archivo
@@ -93,14 +98,16 @@ def leer_paciente(archivo, k):
                   k es la posición (índice 0-basado) del registro a leer.
     Postcondición: Devuelve la tupla con los datos del paciente, o None si k está fuera de rango.
     """
-    
+    #PRÓLOGO
     archivo.seek(k * TAM_REGISTRO)
     registro_bytes = archivo.read(TAM_REGISTRO)
     
+    #RESOLUCIÓN
     # Verificamos si llegamos al final del archivo o leímos bytes incompletos
     if not registro_bytes or len(registro_bytes) < TAM_REGISTRO:
         return None
         
+    #EPÍLOGO
     return desempaquetar_paciente(registro_bytes)
 
 

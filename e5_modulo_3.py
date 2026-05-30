@@ -201,5 +201,3 @@ Segunda pasada (ordenado por prioridad) de forma estable:
 Mantiene el orden por apellido entre pacientes con la misma prioridad.
 
 """
-
-# print(listar_pacientes_ordenados("algo.dat","nombre"))

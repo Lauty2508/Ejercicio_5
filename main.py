@@ -32,10 +32,8 @@ def leer_pacientes(ruta):
 
     # RESOLUCIÓN
     with open(ruta, "rb") as archivo:
-        while True:
+        while paciente is not None: # EOF o fuera de rango
             paciente = leer_paciente(archivo, k)
-            if paciente is None:  # EOF o fuera de rango
-                break
             pacientes.append(paciente)
             k += 1
 
@@ -44,15 +42,23 @@ def leer_pacientes(ruta):
 
 def _crear_datos_iniciales():
     """Genera la base de datos inicial con los casos de prueba estándar."""
+    
+    #RESOLUCIÓN
     pacientes_iniciales = [
         (23456789, "Fernandez", "Joaquin", "2345-6789", 1),
         (12345678, "Mobiglia", "Santiago", "1234-5678", 2),
         (34567890, "Rodriguez", "Lautaro", "0000-0001", 1),
         (45678901, "Paz", "Ana", "1111-2222", 3),
     ]
+
+    #EPÍLOGO
     crear_archivo_pacientes(RUTA_PACIENTES, pacientes_iniciales)
 
 def _mostrar_lista_pacientes(pacientes):
+    """Muestra la lista de pacientes si hay pacientes que mostrar.
+
+    Precondición: pacientes es una lista de tuplas con la forma (dni, apellido, nombre, telefono, prioridad).
+    """
     if not pacientes:
         print("No hay pacientes para mostrar.")
         return
@@ -63,6 +69,7 @@ def _resolver_agenda():
     """Coordina la resolución de la agenda diaria delegando al Módulo 4.
     Precondición: El archivo de pacientes debe existir y tener datos. \n
     Postcondición: Imprime la asignación de turnos o un mensaje si no se pudo resolver."""
+
     # PROLOGO
     pacientes_del_dia = leer_pacientes(RUTA_PACIENTES)
     
@@ -82,13 +89,14 @@ def _resolver_agenda():
         print("\n[Aviso] No se pudo encontrar una asignación válida para la agenda.")
         return
 
-    print("\n=== AGENDA DEL DÍA RESOLVIDA (BACKTRACKING) ===")
+    print("\n=== AGENDA DEL DÍA RESUELTA (BACKTRACKING) ===")
     for franja in sorted(asignacion):
         p = asignacion[franja]
         print(f"Horario {franja} -> {p[1]}, {p[2]} (DNI: {p[0]})")
 
 def main():
     # PROLOGO
+    opcion = ""
     if not os.path.exists(RUTA_PACIENTES):
         _crear_datos_iniciales()
 
@@ -98,7 +106,7 @@ def main():
     # RESOLUCION
     # se abre el archivo una sola vez antes del loop
     with open(RUTA_PACIENTES, "rb") as archivo_binario:
-        while True:
+        while opcion != "5":
             time.sleep(1) # delay para poder leer la respuesta antes de mostrar el menu
 
             print("\n" + "="*40)
@@ -143,9 +151,9 @@ def main():
 
             elif opcion == "5":
                 print("\nTerminando programa...")
-                break
             else:
                 print("[Error] Opción inválida.")
 
+#EPÍlOGO
 if __name__ == "__main__":
     main()
